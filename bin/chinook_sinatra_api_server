@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "optparse"
+
+require "bundler/setup"
+require "chinook_sinatra_api"
+
+server_options = {
+  port: 4567,
+  bind: nil,
+}
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Script available options"
+  opts.on("-pPORT", "--port PORT", "Port that should be used when starting the built-in web server (default: #{server_options[:port]})") do |v|
+    server_options[:port] = v
+  end
+  opts.on("-bBIND", "--bind BIND", "String specifying the hostname or IP address of the interface to listen on") do |v|
+    server_options[:bind] = v
+  end
+  opts.on_tail("-h", "--help", "Show available options") do
+    puts opts
+    exit
+  end
+end
+
+begin
+  parser.parse!(into: server_options)
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument => e
+  warn e.message
+  puts parser
+  exit 1
+end
+
+ChinookSinatraApi::Server.run!(server_options)
