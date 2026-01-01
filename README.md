@@ -1,4 +1,4 @@
-# NetJSON
+# Chinook Sinatra Api Gem
 
 This repository contains an example of JSON API using SQLite and Sinatra with Chinook database.
 
