@@ -72,27 +72,38 @@ class ChinookSinatraApiServerTest < BaseTest
     assert data.each_with_index.all?{|x, index| x.values == db_data[index]}
     # Valid full body request
     body = {
-      conditions: { CustomerId: 1, Country: "Brazil" },
+      conditions: { Country: "Brazil" },
+      orders: [{CustomerId: "DESC"}, {Country: "ASC"}]
     }
     post '/customers/search_all', body.to_json, 'CONTENT_TYPE' => 'application/json'
     assert last_response.ok?
     data = JSON.parse(last_response.body)
-    db_data = db_connection.execute("SELECT * FROM customers WHERE CustomerId = 1 AND Country = 'Brazil'")
+    db_data = db_connection.execute("SELECT * FROM customers WHERE Country = 'Brazil' ORDER BY CustomerId DESC, Country ASC")
     assert data.is_a?(Array)
     assert_equal data.count, db_data.count
     assert data.each_with_index.all?{|x, index| x.values == db_data[index]}
     # Valid request with table_name in other format
     body = {
       conditions: { customerId: 1, country: "Brazil" },
+      orders: [{customerId: "DESC"}, {country: "ASC"}]
     }
     post '/customers/search_all', body.to_json, 'CONTENT_TYPE' => 'application/json'
     assert last_response.ok?
+    data = JSON.parse(last_response.body)
+    db_data = db_connection.execute("SELECT * FROM customers WHERE CustomerId = 1 AND Country = 'Brazil' ORDER BY CustomerId DESC, Country ASC")
     assert data.is_a?(Array)
     assert_equal data.count, db_data.count
     assert data.each_with_index.all?{|x, index| x.values == db_data[index]}
-    # Invalid request body
+    # Invalid request body conditions
     body = {
-      conditions: { InvalidColumn: 1 },
+      conditions: { InvalidColumn: 1 }
+    }
+    post '/customers/search_all', body.to_json, 'CONTENT_TYPE' => 'application/json'
+    assert !last_response.ok?
+    assert last_response.status, 422
+    # Invalid request body orders
+    body = {
+      orders: { CustomerId: "DESCC" }
     }
     post '/customers/search_all', body.to_json, 'CONTENT_TYPE' => 'application/json'
     assert !last_response.ok?

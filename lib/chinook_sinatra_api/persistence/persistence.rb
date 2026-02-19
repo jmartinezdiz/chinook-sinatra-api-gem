@@ -52,8 +52,8 @@ class ChinookSinatraApi::Persistence
     find_table!(table_name).find_by_id!(id)
   end
 
-  def searcher_for(table_name, conditions: {})
-    find_table!(table_name).new_searcher(conditions: conditions)
+  def searcher_for(table_name, conditions: {}, orders: [], limit: nil, offset: nil)
+    find_table!(table_name).new_searcher(conditions: conditions, orders: orders, limit: limit, offset: offset)
   end
 
   ######################################################
