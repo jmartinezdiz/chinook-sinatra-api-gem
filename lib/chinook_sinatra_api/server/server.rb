@@ -2,9 +2,9 @@
 
 require 'sinatra/base'
 
-######################################################
+#######################################################
 # SERVER
-######################################################
+#######################################################
 class ChinookSinatraApi::Server < Sinatra::Base
 
   ######################################################
@@ -53,6 +53,9 @@ class ChinookSinatraApi::Server < Sinatra::Base
     searcher = settings.persistence.searcher_for(
       params[:table_name],
       conditions: (parsed_body["conditions"] || {}),
+      orders: (parsed_body["orders"] || []),
+      limit: (parsed_body["limit"] || nil),
+      offset: (parsed_body["offset"] || nil)
     )
     if searcher.valid?
       searcher.search

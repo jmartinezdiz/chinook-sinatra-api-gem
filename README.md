@@ -83,7 +83,10 @@ Example:
 
     $ curl -s -H "Content-Type: application/json" \
         -H "Accept: application/json" \
-        -d "{\"conditions\":{\"CustomerId\":1,\"Country\":\"Brazil\"}}" \
+        -d "{\"conditions\":{\"Country\":\"Brazil\"}, \
+            \"orders\":[{\"CustomerId\": \"ASC\"}, {\"Country\":\"DESC\"}],
+            \"limit\": 2,
+            \"offset\": 1}" \
         http://localhost:4567/customers/search_all
 
 ## Development

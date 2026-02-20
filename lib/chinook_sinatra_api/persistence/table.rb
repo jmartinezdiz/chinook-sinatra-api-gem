@@ -34,14 +34,31 @@ class ChinookSinatraApi::Persistence::Table
     @columns.keys.include?(column_name)
   end
 
-  def all(column_names: self.column_names, conditions: {})
+  def all(column_names: self.column_names, conditions: {}, orders: [], limit: nil, offset: nil)
     sql = "SELECT #{column_names.join(",")} FROM #{@name}"
     params = []
+
     if conditions.any?
       sql << " WHERE "
       sql << conditions.map{|column_name, *| "(#{column_name} = ?)"}.join(" AND ")
       params << conditions.map{|*, column_value| column_value}
     end
+
+    if orders.any?
+      sql << " ORDER BY "
+      sql << orders.map do |order|
+        order.map{|k, v| "#{k} #{v}"}.join(", ")
+      end.join(", ")
+    end
+
+    if limit
+      sql << " LIMIT #{limit}"
+    end
+
+    if offset
+      sql << " OFFSET #{offset}"
+    end
+
     to_data(column_names, @connection.execute(sql, params))
   end
 
@@ -59,8 +76,8 @@ class ChinookSinatraApi::Persistence::Table
     element
   end
 
-  def new_searcher(conditions: {})
-    ChinookSinatraApi::Persistence::Searcher.new(table: self, conditions: conditions)
+  def new_searcher(conditions: {}, orders: [], limit: nil, offset: nil)
+    ChinookSinatraApi::Persistence::Searcher.new(table: self, conditions: conditions, orders: orders, limit: limit, offset: offset)
   end
 
   ######################################################
