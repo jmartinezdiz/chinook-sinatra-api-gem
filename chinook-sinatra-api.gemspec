@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = "This repository contains an example of JSON API using SQLite and Sinatra with Chinook database"
   spec.description = "This repository contains an example of JSON API using SQLite and Sinatra with Chinook database"
-  spec.homepage = "https://github.com/SilviaCTeimas/chinook-sinatra-api-gem"
+  spec.homepage = "https://github.com/jmartinezdiz/chinook-sinatra-api-gem"
   spec.license = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 3.4.0")
 
